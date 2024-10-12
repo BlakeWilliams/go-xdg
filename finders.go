@@ -49,7 +49,7 @@ func FindCacheFile(pathParts ...string) (string, error) {
 // FindStateFile searches for a file in the user's state directory. If the file
 // is not found ErrNoFile is returned.
 func FindStateFile(pathParts ...string) (string, error) {
-	return findFile(CacheHome, pathParts...)
+	return findFile(StateHome, pathParts...)
 }
 
 func findFile(findRoot func() (string, error), pathParts ...string) (string, error) {

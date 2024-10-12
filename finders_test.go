@@ -41,7 +41,6 @@ func TestFindFile(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			fmt.Println(f.Name())
 			defer os.Remove(f.Name())
 			f.Write([]byte(tC.desc))
 			f.Close()
@@ -63,26 +62,57 @@ func TestFindFile(t *testing.T) {
 	}
 }
 
-func TestFindConfigFile(t *testing.T) {
-	tmpDir := t.TempDir()
-	resetEnv := stubEnv(map[string]string{
-		"XDG_CONFIG_HOME": tmpDir,
-	})
-	defer resetEnv()
-
-	f, err := os.Create(path.Join(tmpDir, "config.yaml"))
-	if err != nil {
-		t.Fatal(err)
+func TestFinders(t *testing.T) {
+	testCases := []struct {
+		desc           string
+		finderEnvValue string
+		finder         func(pathParts ...string) (string, error)
+	}{
+		{
+			desc:           "find config file",
+			finderEnvValue: "XDG_CONFIG_HOME",
+			finder:         FindConfigFile,
+		},
+		{
+			desc:           "find data file",
+			finderEnvValue: "XDG_DATA_HOME",
+			finder:         FindDataFile,
+		},
+		{
+			desc:           "find cache file",
+			finderEnvValue: "XDG_CACHE_HOME",
+			finder:         FindCacheFile,
+		},
+		{
+			desc:           "find state file",
+			finderEnvValue: "XDG_STATE_HOME",
+			finder:         FindStateFile,
+		},
 	}
-	defer os.Remove(f.Name())
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			tmpDir := t.TempDir()
+			env := map[string]string{}
+			env[tC.finderEnvValue] = tmpDir
+			resetEnv := stubEnv(env)
+			defer resetEnv()
 
-	path, err := FindConfigFile("config.yaml")
-	if err != nil {
-		t.Fatal(err)
-	}
+			f, err := os.Create(path.Join(tmpDir, "config.yaml"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer os.Remove(f.Name())
 
-	if path != f.Name() {
-		t.Errorf("Expected %s, got %s", f.Name(), path)
+			path, err := tC.finder("config.yaml")
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if path != f.Name() {
+				t.Errorf("Expected %s, got %s", f.Name(), path)
+			}
+
+		})
 	}
 }
 
