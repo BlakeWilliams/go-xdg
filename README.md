@@ -23,34 +23,38 @@ The API is relatively simple. Each directory has a function that returns the
 path to the directory or an error (e.g. if $HOME is not set in macOS/Linux).
 
 ```go
+import "github.com/blakewilliams/go-xdg"
+
 // Get the config directory
-configDir, err := ConfigHome()
+configDir, err := xdg.ConfigHome()
 
 // Get the data directory
-dataDir, err := DataHome()
+dataDir, err := xdg.DataHome()
 
 // Get the cache directory
-cacheDir, err := CacheHome()
+cacheDir, err := xdg.CacheHome()
 
 // Get the state directory
-stateDir, err := StateHome()
+stateDir, err := xdg.StateHome()
 ```
 
 This package also has support for finding files. It will return the path to the
 file if it is found, otherwise it returns an `ErrNoFile` error.
 
 ```go
+import "github.com/blakewilliams/go-xdg"
+
 // Find `myapp/config.yaml` in the config directory
-configFilePath, err := FindConfigFile("myapp", "config.yaml")
+configFilePath, err := xdg.FindConfigFile("myapp", "config.yaml")
 
 // Find `myapp/data.json` in the data directory
-dataFilePath, err := FindDataFile("myapp", "data.json")
+dataFilePath, err := xdg.FindDataFile("myapp", "data.json")
 
 // Find `myapp/cache.db` in the cache directory
-dataFilePath, err := FindCacheFile("myapp", "cache.db")
+dataFilePath, err := xdg.FindCacheFile("myapp", "cache.db")
 
 // Find `myapp/state.db` in the state directory
-stateFilePath, err := FindStateFile("myapp", "state.db")
+stateFilePath, err := xdg.FindStateFile("myapp", "state.db")
 ```
 
 ## Contributions welcome!
