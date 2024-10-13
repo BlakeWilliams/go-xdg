@@ -1,9 +1,16 @@
 package xdg
 
 import (
-	"fmt"
 	"os"
-	"path"
+)
+
+type xdg = string
+
+const (
+	xdgConfig xdg = "XDG_CONFIG_HOME"
+	xdgData   xdg = "XDG_DATA_HOME"
+	xdgCache  xdg = "XDG_CACHE_HOME"
+	xdgState  xdg = "XDG_STATE_HOME"
 )
 
 // ConfigHome returns the path to the user's configuration directory.
@@ -11,16 +18,11 @@ import (
 //   - $XDG_CONFIG_HOME
 //   - $HOME/.config
 func ConfigHome() (string, error) {
-	if path := os.Getenv("XDG_CONFIG_HOME"); path != "" {
+	if path := os.Getenv(xdgConfig); path != "" {
 		return path, nil
 	}
 
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("could not get user's home directory: %w", err)
-	}
-
-	return path.Join(home, ".config"), nil
+	return fallback(xdgConfig)
 }
 
 // DataHome returns the path to the user's data directory.
@@ -28,16 +30,11 @@ func ConfigHome() (string, error) {
 //   - $XDG_DATA_HOME
 //   - $HOME/.local/share
 func DataHome() (string, error) {
-	if path := os.Getenv("XDG_DATA_HOME"); path != "" {
+	if path := os.Getenv(xdgData); path != "" {
 		return path, nil
 	}
 
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("could not get user's home directory: %w", err)
-	}
-
-	return path.Join(home, ".local/share"), nil
+	return fallback(xdgData)
 }
 
 // CacheHome returns the path to the user's cache directory.
@@ -45,16 +42,11 @@ func DataHome() (string, error) {
 //   - $XDG_CACHE_HOME
 //   - $HOME/.cache
 func CacheHome() (string, error) {
-	if path := os.Getenv("XDG_CACHE_HOME"); path != "" {
+	if path := os.Getenv(xdgCache); path != "" {
 		return path, nil
 	}
 
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("could not get user's home directory: %w", err)
-	}
-
-	return path.Join(home, ".cache"), nil
+	return fallback(xdgCache)
 }
 
 // StateHome returns the path to the user's cache directory.
@@ -62,14 +54,9 @@ func CacheHome() (string, error) {
 //   - $XDG_STATE_HOME
 //   - $HOME/.cache
 func StateHome() (string, error) {
-	if path := os.Getenv("XDG_STATE_HOME"); path != "" {
+	if path := os.Getenv(xdgState); path != "" {
 		return path, nil
 	}
 
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("could not get user's home directory: %w", err)
-	}
-
-	return path.Join(home, ".local/state"), nil
+	return fallback(xdgState)
 }

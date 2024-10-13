@@ -4,12 +4,32 @@ This package implements (a subset of) the XDG Base Directory Specification in
 Go. It uses the user expected directories as defined by the XDG Base Directory
 Specification for Linux/Unix/macOS and (soon) Windows.
 
-For Linux/Unix/macOS the following directories are used:
+
+### Linux/macOS directories
 
 - Config - `$XDG_CONFIG_HOME` or `$HOME/.config`
 - Data - `$XDG_DATA_HOME` or `$HOME/.local/share`
 - Cache - `$XDG_CACHE_HOME` or `$HOME/.cache`
 - State - `$XDG_STATE_HOME` or `$HOME/.local/state`
+
+### Windows directories
+
+**Windows support has not been tested yet**. Assistance/contributions very welcome here.
+
+First, it checks the following environment variables if the `XDG_*_HOME`
+variable is not set:
+
+- Config - `%APPDATA%`
+- Data - `%APPDATA%`
+- Cache - `%LOCALAPPDATA%`
+- State - `%LOCALAPPDATA%`
+
+If the environment variables are not set, it falls back to the following:
+
+- Config - `%USERPROFILE%\AppData\Local`
+- Data - `%USERPROFILE%\AppData\Local`
+- Cache - `%USERPROFILE%\AppData\Local\Temp`
+- State - `%USERPROFILE%\AppData\Local`
 
 ## Installation
 
